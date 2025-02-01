@@ -57,4 +57,13 @@ public class Table {
         sb.append(")");
         return sb.toString();
     }
+
+    public boolean isDirty() {
+        for (Column column : this.getColumns()) {
+            if (column.isDirty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

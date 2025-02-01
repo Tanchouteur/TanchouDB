@@ -53,4 +53,13 @@ public class Database {
     public String toJSONObject() {
         return JSONSerializer.serializeDatabase(this);
     }
+
+    public boolean isDirty() {
+        for (Schema schema : this.getSchemas()) {
+            if (schema.isDirty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

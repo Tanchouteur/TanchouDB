@@ -7,6 +7,8 @@ public class Column {
     private final boolean isPrimaryKey;
     private final boolean isForeignKey;
 
+    private boolean dirty;
+
     public Column(String name, PrimitiveType type, boolean isPrimaryKey, boolean isForeignKey, boolean nullable) {
         this.name = name;
         this.type = type;
@@ -33,6 +35,7 @@ public class Column {
 
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
+        this.dirty = true;
     }
 
     public boolean isForeignKey() {
@@ -42,5 +45,9 @@ public class Column {
     @Override
     public String toString() {
         return name + " " + type + (isPrimaryKey ? " PRIMARY KEY" : "") + (nullable ? "" : " NOT NULL");
+    }
+
+    public boolean isDirty() {
+        return dirty;
     }
 }

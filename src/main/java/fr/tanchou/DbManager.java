@@ -30,7 +30,10 @@ public class DbManager {
         return JSONParser.parseDBList(StorageManager.readFromFile("dbNameList"));
     }
 
-    public void addDatabase(Database db) {
+    public void addDatabase(Database db) throws IllegalArgumentException {
+        if (this.getDatabasesMap().containsKey(db.getName())) {
+            throw new IllegalArgumentException("Database already exists");
+        }
         this.getDbNameList().addDatabase(db.getName());
         this.getDatabasesMap().put(db.getName(), db);
     }
@@ -58,8 +61,16 @@ public class DbManager {
 
     public void commit() {
         for (Database db : this.getDatabasesMap().values()) {
-            StorageManager.writeToFile(db.getName(), db.toJSONObject());
+            if (db.isDirty()) {
+                StorageManager.writeToFile(db.getName(), db.toJSONObject());
+            }
         }
-        StorageManager.writeToFile("dbNameList", this.getDbNameList().toJSONObject());
+        if (this.getDbNameList().isDirty()) {
+            StorageManager.writeToFile("dbNameList", this.getDbNameList().toJSONObject());
+        }
+    }
+
+    public Database getDatabase(String db1) {
+        return this.getDatabasesMap().get(db1);
     }
 }

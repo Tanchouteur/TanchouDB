@@ -46,4 +46,13 @@ public class Schema {
         sb.append(")");
         return sb.toString();
     }
+
+    public boolean isDirty() {
+        for (Table table : this.getTables()) {
+            if (table.isDirty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

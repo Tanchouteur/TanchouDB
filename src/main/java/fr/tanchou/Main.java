@@ -9,7 +9,7 @@ public class Main {
 
         dbManager.listDatabases();
 
-        Database db = new Database("db1");
+        /*Database db = new Database("db1");
         Schema schema = new Schema("schema1");
         Table table = new Table("table1");
         table.addColumn(new Column("col1", PrimitiveType.INTEGER, true, false, false));
@@ -17,9 +17,9 @@ public class Main {
         schema.addTable(table);
         db.addSchema(schema);
 
-        dbManager.addDatabase(db);
+        //dbManager.addDatabase(db);*/
 
-        dbManager.listDatabases();
+        System.out.println(dbManager.getDatabase("db1").toJSONObject());
 
         dbManager.commit();
     }
