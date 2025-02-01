@@ -7,6 +7,8 @@ import fr.tanchou.structure.Table;
 
 public class JSONSerializer {
     public static String serializeDatabase(Database db) {
+        if (db == null) throw new IllegalArgumentException("Database cannot be null");
+
         StringBuilder json = new StringBuilder();
         json.append("{\n");
         json.append("\"name\": \"").append(db.getName()).append("\",\n");
