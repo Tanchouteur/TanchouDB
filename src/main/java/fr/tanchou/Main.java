@@ -4,17 +4,23 @@ import fr.tanchou.structure.*;
 
 public class Main {
     public static void main(String[] args) {
-        Database db = new Database("MyDB");
 
-        Schema schema = new Schema("Public");
+        DbManager dbManager = new DbManager();
+
+        dbManager.listDatabases();
+
+        Database db = new Database("db1");
+        Schema schema = new Schema("schema1");
+        Table table = new Table("table1");
+        table.addColumn(new Column("col1", PrimitiveType.INTEGER, true, false, false));
+        table.addColumn(new Column("col2", PrimitiveType.VARCHAR, false, false, true));
+        schema.addTable(table);
         db.addSchema(schema);
 
-        Table users = new Table("Users");
-        users.addColumn(new Column("id", PrimitiveType.INTEGER, true, false, false));
-        users.addColumn(new Column("name", PrimitiveType.VARCHAR, false, false, false));
-        users.addConstraint(new Constraint(ConstraintType.PRIMARY_KEY, "id"));
+        dbManager.addDatabase(db);
 
-        schema.addTable(users);
+        dbManager.listDatabases();
 
+        dbManager.commit();
     }
 }

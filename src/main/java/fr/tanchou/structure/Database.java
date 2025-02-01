@@ -1,5 +1,7 @@
 package fr.tanchou.structure;
 
+import fr.tanchou.storage.JSONSerializer;
+
 import java.util.*;
 
 public class Database {
@@ -46,5 +48,9 @@ public class Database {
 
         sb.append(")");
         return sb.toString();
+    }
+
+    public String toJSONObject() {
+        return JSONSerializer.serializeDatabase(this);
     }
 }

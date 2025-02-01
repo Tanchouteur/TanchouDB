@@ -10,7 +10,7 @@ public class JSONParser {
     public static Database parseDatabase(String jsonString) {
         jsonString = jsonString.trim(); // Remove leading/trailing whitespace
         if (!jsonString.startsWith("{") || !jsonString.endsWith("}")) {
-            throw new IllegalArgumentException("Invalid JSON: Must start with '{' and end with '}'");
+            throw new IllegalArgumentException("Invalid JSON: Must start with '{' and end with '}'" + jsonString);
         }
 
         // Remove the outer braces
@@ -143,5 +143,43 @@ public class JSONParser {
             if (depth == 0) return i;
         }
         throw new IllegalArgumentException("Unmatched brackets in JSON: " + json);
+    }
+
+
+    public static DbNameList parseDBList(String jsonString) {
+
+        if (jsonString == null || jsonString.isEmpty()) {
+            initDBList();
+        }else {
+
+            jsonString = jsonString.trim(); // Remove leading/trailing whitespace
+
+            if (!jsonString.startsWith("{") || !jsonString.endsWith("}")) {
+                throw new IllegalArgumentException("Invalid JSON: Must start with '{' and end with '}'");
+            }
+
+            // Remove the outer braces
+            jsonString = jsonString.substring(1, jsonString.length() - 1).trim();
+
+            DbNameList dbNameList = new DbNameList();
+
+            // Extract the "databases" array
+            String databasesString = extractArray(jsonString, "databases");
+            String[] databasesName = splitJsonArray(databasesString);
+            for (String database : databasesName) {
+                dbNameList.addDatabase(database);
+            }
+
+            dbNameList.setDirty(false);
+
+            return dbNameList;
+        }
+
+        return new DbNameList();
+    }
+
+    private static void initDBList() {
+        DbNameList dbNameList = new DbNameList();
+        StorageManager.writeToFile("dbNameList", dbNameList.toJSONObject());
     }
 }

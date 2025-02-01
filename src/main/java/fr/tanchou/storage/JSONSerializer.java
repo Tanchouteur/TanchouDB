@@ -1,9 +1,6 @@
 package fr.tanchou.storage;
 
-import fr.tanchou.structure.Column;
-import fr.tanchou.structure.Database;
-import fr.tanchou.structure.Schema;
-import fr.tanchou.structure.Table;
+import fr.tanchou.structure.*;
 
 public class JSONSerializer {
     public static String serializeDatabase(Database db) {
@@ -48,6 +45,22 @@ public class JSONSerializer {
 
             if (i < db.getSchemas().size() - 1) json.append(",");
             json.append("\n");
+        }
+
+        json.append("]\n}");
+        return json.toString();
+    }
+
+    public static String serializeDBList(DbNameList dbNameList) {
+        if (dbNameList == null) throw new IllegalArgumentException("DbNameList cannot be null");
+
+        StringBuilder json = new StringBuilder();
+        json.append("{\n");
+        json.append("\"databases\": [\n");
+
+        for (int i = 0; i < dbNameList.getDatabases().size(); i++) {
+            String db = dbNameList.getDatabases().get(i);
+            json.append(db).append(",\n");
         }
 
         json.append("]\n}");
