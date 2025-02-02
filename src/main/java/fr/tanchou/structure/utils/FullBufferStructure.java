@@ -88,7 +88,7 @@ public class FullBufferStructure implements BufferStructure {
         return this.getParser().parseDBList(this.readFromFile("dbNameList"));
     }
 
-    private void commit() {
+    public void commit() {
         for (Database db : this.getDatabasesMap().values()) {
             if (db.isDirty()) {
                 this.writeToFile(db.getName(), db.toJSONObject());

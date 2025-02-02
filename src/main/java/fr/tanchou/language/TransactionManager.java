@@ -1,12 +1,17 @@
 package fr.tanchou.language;
 
+import fr.tanchou.dataInstance.BufferData;
+import fr.tanchou.dataInstance.FullBufferData;
 import fr.tanchou.enums.InstructionType;
 import fr.tanchou.enums.StructureType;
 import fr.tanchou.structure.Increment;
 import fr.tanchou.structure.IncrementClassic;
 import fr.tanchou.structure.Table;
+import fr.tanchou.structure.utils.BufferStructure;
 import fr.tanchou.structure.utils.DbManager;
+import fr.tanchou.structure.utils.FullBufferStructure;
 import fr.tanchou.structure.utils.IDbManager;
+import fr.tanchou.utils.TransactionResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,21 +76,29 @@ public class TransactionManager {
         return new Transaction(transactionId.increment(), operations);
     }
 
-    public boolean executeTransaction(Transaction transaction) {
+    public TransactionResult executeTransaction(Transaction transaction) {
         IDbManager dbManager = DbManager.getInstance();
 
+        TransactionResult transactionResult = null;
+
         for (Operation operation : transaction.getOperations()) {
+            if (operation.getStructureType() == null && operation.getInstructionType() == InstructionType.COMMIT) {
+                FullBufferStructure.getInstance().commit();
+                continue;
+            }
             switch (operation.getStructureType()) {
                 case DATABASE:
                     switch (operation.getInstructionType()) {
                         case CREATE:
                             dbManager.createDatabase(operation.getParameters().get(0));
+                            transactionResult = new TransactionResult(true, "Database created");
                             break;
                         case UPDATE:
                             // Not implemented
                             break;
                         case DELETE:
                             dbManager.removeDatabase(operation.getParameters().get(0));
+                            transactionResult = new TransactionResult(true, "Database deleted");
                             break;
                     }
                     break;
@@ -94,6 +107,7 @@ public class TransactionManager {
                     switch (operation.getInstructionType()) {
                         case CREATE:
                             dbManager.getDatabasesMap().get(operation.getParameters().get(0)).addTable(new Table(operation.getParameters().get(1)));
+                            transactionResult = new TransactionResult(true, "Table created");
                             break;
                         case UPDATE:
                             // Not implemented
@@ -115,10 +129,15 @@ public class TransactionManager {
                         case DELETE:
                             // Not implemented
                             break;
+
+                        case SELECT:
+                            transactionResult = new TransactionResult(true, FullBufferData.getInstance().getData(operation.getParameters().get(1), operation.getParameters().get(2)).toString());
+                            break;
+
                     }
                     break;
             }
         }
-        return true;
+        return transactionResult;
     }
 }

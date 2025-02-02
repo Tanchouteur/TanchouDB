@@ -1,26 +1,24 @@
 package fr.tanchou.tester;
 
 import fr.tanchou.dataInstance.FullBufferData;
+import fr.tanchou.language.Transaction;
 import fr.tanchou.language.TransactionManager;
-import fr.tanchou.structure.*;
-import fr.tanchou.structure.utils.DbManager;
-import fr.tanchou.structure.utils.IDbManager;
+import fr.tanchou.utils.TransactionResult;
 
 public class Main {
     public static void main(String[] args) {
 
         TransactionManager transactionManager = new TransactionManager();
 
-        dbManager.listDatabases();
+        String select = "SELECT * testDB testTable";
 
-        //dbManager.createDatabase("testDB");
+        String createTable = "CREATE TABLE testDB testTable";
 
-        Database db = dbManager.getDatabasesMap().get("testDB");
 
-        db.addTable(new Table("testTable"));
+        Transaction transaction = transactionManager.createTransaction(select);
 
-        System.out.println(db);
+        TransactionResult transactionResult = transactionManager.executeTransaction(transaction);
 
-        System.out.println(FullBufferData.getInstance().getTablesIndex());
+        System.out.println(transactionResult);
     }
 }

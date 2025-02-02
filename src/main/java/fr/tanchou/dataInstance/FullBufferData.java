@@ -5,6 +5,7 @@ import fr.tanchou.structure.utils.FullBufferStructure;
 import fr.tanchou.utils.LocalStorageManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +56,17 @@ public class FullBufferData implements BufferData {
     @Override
     public boolean deleteData(String dbName, String tableName, Tuple tuple) {
         return false;
+    }
+
+    @Override
+    public Set<Tuple> getData(String dbName, String tableName) {
+        if (!tablesIndex.containsKey(dbName) ) {
+            throw new IllegalArgumentException("DB not found " + dbName);
+        }else if (!tablesIndex.get(dbName).containsKey(tableName)) {
+            throw new IllegalArgumentException("Table not found " + tableName);
+        }
+
+        return getTablesIndex().get(dbName).get(tableName);
     }
 
     @Override
