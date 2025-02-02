@@ -1,4 +1,5 @@
-import fr.tanchou.storage.JSONSerializer;
+import fr.tanchou.enums.PrimitiveType;
+import fr.tanchou.structure.utils.JSONSerializer;
 import fr.tanchou.structure.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

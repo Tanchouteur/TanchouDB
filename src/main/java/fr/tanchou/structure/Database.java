@@ -1,6 +1,6 @@
 package fr.tanchou.structure;
 
-import fr.tanchou.storage.JSONSerializer;
+import fr.tanchou.structure.utils.JSONSerializer;
 
 import java.util.*;
 

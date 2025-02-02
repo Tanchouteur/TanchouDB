@@ -1,5 +1,7 @@
 package fr.tanchou.structure;
 
+import fr.tanchou.enums.ConstraintType;
+
 public class Constraint {
     private final ConstraintType type;
     private final String columnName;

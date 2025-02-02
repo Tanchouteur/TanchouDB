@@ -1,4 +1,4 @@
-package fr.tanchou.storage;
+package fr.tanchou.structure.utils;
 
 import fr.tanchou.structure.*;
 

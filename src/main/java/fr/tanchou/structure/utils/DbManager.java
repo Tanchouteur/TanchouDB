@@ -1,7 +1,5 @@
-package fr.tanchou;
+package fr.tanchou.structure.utils;
 
-import fr.tanchou.storage.JSONParser;
-import fr.tanchou.storage.StorageManager;
 import fr.tanchou.structure.DbNameList;
 import fr.tanchou.structure.Database;
 

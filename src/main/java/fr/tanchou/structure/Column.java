@@ -1,5 +1,7 @@
 package fr.tanchou.structure;
 
+import fr.tanchou.enums.PrimitiveType;
+
 public class Column {
     private final String name;
     private final PrimitiveType type;

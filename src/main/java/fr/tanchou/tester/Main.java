@@ -1,6 +1,6 @@
-package fr.tanchou;
+package fr.tanchou.tester;
 
-import fr.tanchou.structure.*;
+import fr.tanchou.structure.utils.DbManager;
 
 public class Main {
     public static void main(String[] args) {

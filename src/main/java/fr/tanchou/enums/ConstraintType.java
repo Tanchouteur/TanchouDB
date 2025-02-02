@@ -1,4 +1,4 @@
-package fr.tanchou.structure;
+package fr.tanchou.enums;
 
 public enum ConstraintType {
     PRIMARY_KEY,

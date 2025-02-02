@@ -1,7 +1,9 @@
-package fr.tanchou;
+package fr.tanchou.tester;
 
-import fr.tanchou.storage.JSONParser;
-import fr.tanchou.storage.StorageManager;
+import fr.tanchou.enums.ConstraintType;
+import fr.tanchou.enums.PrimitiveType;
+import fr.tanchou.structure.utils.JSONParser;
+import fr.tanchou.structure.utils.StorageManager;
 import fr.tanchou.structure.*;
 
 public class WriteDBMain {

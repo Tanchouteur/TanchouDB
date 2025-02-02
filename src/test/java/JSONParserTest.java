@@ -1,4 +1,4 @@
-import fr.tanchou.storage.JSONParser;
+import fr.tanchou.structure.utils.JSONParser;
 import fr.tanchou.structure.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

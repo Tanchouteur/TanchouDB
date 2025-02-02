@@ -1,4 +1,4 @@
-import fr.tanchou.storage.StorageManager;
+import fr.tanchou.structure.utils.StorageManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

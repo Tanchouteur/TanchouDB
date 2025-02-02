@@ -1,5 +1,6 @@
-package fr.tanchou.storage;
+package fr.tanchou.structure.utils;
 
+import fr.tanchou.enums.PrimitiveType;
 import fr.tanchou.structure.*;
 
 import java.util.ArrayList;
