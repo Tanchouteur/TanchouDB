@@ -1,6 +1,7 @@
 import fr.tanchou.enums.PrimitiveType;
 import fr.tanchou.structure.utils.JSONSerializer;
 import fr.tanchou.structure.*;
+import fr.tanchou.structure.utils.Serializer;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,6 +9,8 @@ public class JSONSerializerTest {
 
     @Test
     void testSerializeDatabase() {
+        Serializer<String> serializer = JSONSerializer.getInstance();
+
         // Create a database
         Database db = new Database("TestDB");
 
@@ -42,11 +45,13 @@ public class JSONSerializerTest {
                 "}";
 
         // Assert the serialization output
-        assertEquals(expected, JSONSerializer.serializeDatabase(db));
+        assertEquals(expected, serializer.serializeDatabase(db));
     }
 
     @Test
     void testSerializeDatabaseMultipleSchemas() {
+        Serializer<String> serializer = JSONSerializer.getInstance();
+
         // Create a database
         Database db = new Database("TestDB");
 
@@ -104,11 +109,13 @@ public class JSONSerializerTest {
                 "}";
 
         // Assert the serialization output
-        assertEquals(expected, JSONSerializer.serializeDatabase(db));
+        assertEquals(expected, serializer.serializeDatabase(db));
     }
 
     @Test
     void testSerializeDatabaseEmpty() {
+        Serializer<String> serializer = JSONSerializer.getInstance();
+
         // Create an empty database
         Database db = new Database("EmptyDB");
 
@@ -120,16 +127,18 @@ public class JSONSerializerTest {
                 "}";
 
         // Assert the serialization output
-        assertEquals(expected, JSONSerializer.serializeDatabase(db));
+        assertEquals(expected, serializer.serializeDatabase(db));
     }
 
     @Test
     void testSerializeEmptyParameters() {
+        Serializer<String> serializer = JSONSerializer.getInstance();
+
         // Create an empty database
         Database db = null;
 
         assertThrows(IllegalArgumentException.class, () -> {
-            JSONSerializer.serializeDatabase(db);
+            serializer.serializeDatabase(db);
         });
     }
 }

@@ -5,5 +5,5 @@ public enum PrimitiveType {
     VARCHAR,
     BOOLEAN,
     FLOAT,
-    DOUBLE
+    KEY, DOUBLE
 }

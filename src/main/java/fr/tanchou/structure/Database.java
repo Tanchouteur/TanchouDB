@@ -1,65 +1,55 @@
 package fr.tanchou.structure;
 
 import fr.tanchou.structure.utils.JSONSerializer;
+import fr.tanchou.structure.utils.Serializer;
 
 import java.util.*;
 
 public class Database {
     private final String name;
-    private final List<Schema> schemas;
+    private final Map<String, Schema> Schemas;
 
-    public Database(String name) {
+    private final Serializer<String> serializer = JSONSerializer.getInstance();
+
+    public Database(String name, Map<String, Schema> schemas) {
         this.name = name;
-        this.schemas = new ArrayList<>();
+        this.Schemas = schemas;
     }
 
-    public void addSchema(Schema schema) {
-        this.getSchemas().add(schema);
+    public void addTable(Table table) {
+        this.getUserSchema().addTable(table);
     }
 
-    public Schema getSchema(String name) {
-        for (Schema s : schemas) {
-            if (s.getName().equals(name)) {
-                return s;
-            }
-        }
-        return null;
+    public Schema getUserSchema() {
+        return getSchemas().get("user");
+    }
+
+    private Schema getConstraintSchema() {
+        return getSchemas().get("constraint");
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Schema> getSchemas() {
-        return schemas;
+    public Map<String, Schema> getSchemas() {
+        return Schemas;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getName()).append(" (\n");
-
-        for (int i = 0; i < this.getSchemas().size(); i++) {
-            sb.append(this.getSchemas().get(i));
-            if (i < this.getSchemas().size() - 1) {
-                sb.append(", \n");
-            }
-        }
-
-        sb.append(")");
-        return sb.toString();
+        return this.toJSONObject();
     }
 
     public String toJSONObject() {
-        return JSONSerializer.serializeDatabase(this);
+        return this.getSerializer().serializeDatabase(this);
     }
 
     public boolean isDirty() {
-        for (Schema schema : this.getSchemas()) {
-            if (schema.isDirty()) {
-                return true;
-            }
-        }
-        return false;
+        return getUserSchema().isDirty() || getConstraintSchema().isDirty();
+    }
+
+    private Serializer<String> getSerializer() {
+        return serializer;
     }
 }

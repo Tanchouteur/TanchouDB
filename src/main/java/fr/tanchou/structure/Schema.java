@@ -2,7 +2,7 @@ package fr.tanchou.structure;
 
 import java.util.*;
 
-public class Schema {
+public abstract class Schema {
     private final String name;
     private final List<Table> tables;
 
@@ -35,15 +35,10 @@ public class Schema {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.getName()).append(" (\n");
-
-        for (int i = 0; i < this.getTables().size(); i++) {
-            sb.append(this.getTables().get(i));
-            if (i < this.getTables().size() - 1) {
-                sb.append(", \n");
-            }
+        sb.append("Schema: ").append(this.getName()).append("\n");
+        for (Table table : this.getTables()) {
+            sb.append(table.toString());
         }
-        sb.append(")");
         return sb.toString();
     }
 

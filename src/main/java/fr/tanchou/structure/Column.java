@@ -8,15 +8,23 @@ public class Column {
     private boolean nullable;
     private final boolean isPrimaryKey;
     private final boolean isForeignKey;
+    private final boolean isUnique;
+    private final boolean autoIncrement;
+    private String defaultValue;
 
     private boolean dirty;
 
-    public Column(String name, PrimitiveType type, boolean isPrimaryKey, boolean isForeignKey, boolean nullable) {
+    public Column(String name, PrimitiveType primitiveType,boolean isPrimaryKey, boolean isForeignKey, boolean nullable, boolean isUnique, boolean autoIncrement, String defaultValue) {
         this.name = name;
-        this.type = type;
+        this.type = primitiveType;
         this.isPrimaryKey = isPrimaryKey;
         this.isForeignKey = isForeignKey;
         this.nullable = nullable;
+        this.isUnique = isUnique;
+        this.autoIncrement = autoIncrement;
+        this.defaultValue = defaultValue;
+
+        this.dirty = true;
     }
 
     public String getName() {
@@ -44,6 +52,14 @@ public class Column {
         return isForeignKey;
     }
 
+    public boolean isUnique() {
+        return isUnique;
+    }
+
+    public boolean isAutoIncrement() {
+        return autoIncrement;
+    }
+
     @Override
     public String toString() {
         return name + " " + type + (isPrimaryKey ? " PRIMARY KEY" : "") + (nullable ? "" : " NOT NULL");
@@ -51,5 +67,13 @@ public class Column {
 
     public boolean isDirty() {
         return dirty;
+    }
+
+    public void setDirty(boolean b) {
+        this.dirty = b;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
     }
 }

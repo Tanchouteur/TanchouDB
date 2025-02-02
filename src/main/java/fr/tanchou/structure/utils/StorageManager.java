@@ -1,6 +1,6 @@
 package fr.tanchou.structure.utils;
 
-public interface IStorageManager {
+public interface StorageManager {
 
     void writeToFile(String filename, String content);
 

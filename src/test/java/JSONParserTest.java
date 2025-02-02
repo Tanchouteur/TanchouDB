@@ -1,5 +1,6 @@
 import fr.tanchou.structure.utils.JSONParser;
 import fr.tanchou.structure.*;
+import fr.tanchou.structure.utils.Parser;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +8,8 @@ public class JSONParserTest {
 
     @Test
     void testParseDatabase() {
+        Parser<String> parser = JSONParser.getInstance();
+
         String json = "{\n" +
                 "\"name\": \"TestDB\",\n" +
                 "\"schemas\": [\n" +
@@ -25,7 +28,7 @@ public class JSONParserTest {
                 "}";
 
         // Parse the JSON string
-        Database db = JSONParser.parseDatabase(json);
+        Database db = parser.parseDatabase(json);
 
         // Test the database name
         assertEquals("TestDB", db.getName());
@@ -60,6 +63,8 @@ public class JSONParserTest {
 
     @Test
     void testParseDatabaseWithMultipleSchemas() {
+        Parser<String> parser = JSONParser.getInstance();
+
         String json = "{\n" +
                 "\"name\": \"TestDB\",\n" +
                 "\"schemas\": [\n" +
@@ -89,7 +94,7 @@ public class JSONParserTest {
                 "}";
 
         // Parse the JSON string
-        Database db = JSONParser.parseDatabase(json);
+        Database db = parser.parseDatabase(json);
 
         // Test the database name
         assertEquals("TestDB", db.getName());
@@ -129,6 +134,8 @@ public class JSONParserTest {
 
     @Test
     void testMissingKey() {
+        Parser<String> parser = JSONParser.getInstance();
+
         String json = "{\n" +
                 "\"name\": ,\n" +
                 "\"schemas\": [\n" +
@@ -147,18 +154,20 @@ public class JSONParserTest {
                 "}";
         String invalidJson = json.replace("\"name\": \"TestDB\",\n", "");
 
-        assertThrows(IllegalArgumentException.class, () -> JSONParser.parseDatabase(invalidJson));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseDatabase(invalidJson));
     }
 
     @Test
     void testParseEmptyDatabase() {
+        Parser<String> parser = JSONParser.getInstance();
+
         String json = "{\n" +
                 "\"name\": \"EmptyDB\",\n" +
                 "\"schemas\": []\n" +
                 "}";
 
         // Parse the JSON string
-        Database db = JSONParser.parseDatabase(json);
+        Database db = parser.parseDatabase(json);
 
         // Test the database name
         assertEquals("EmptyDB", db.getName());
@@ -169,11 +178,15 @@ public class JSONParserTest {
 
     @Test
     void testEmptyParameter() {
-        assertThrows(IllegalArgumentException.class, () -> JSONParser.parseDatabase(""));
+        Parser<String> parser = JSONParser.getInstance();
+
+        assertThrows(IllegalArgumentException.class, () -> parser.parseDatabase(""));
     }
 
     @Test
     void testInvalidJson() {
-        assertThrows(IllegalArgumentException.class, () -> JSONParser.parseDatabase("{"));
+        Parser<String> parser = JSONParser.getInstance();
+
+        assertThrows(IllegalArgumentException.class, () -> parser.parseDatabase("{"));
     }
 }

@@ -1,12 +1,15 @@
 package fr.tanchou.structure;
 
 import fr.tanchou.structure.utils.JSONSerializer;
+import fr.tanchou.structure.utils.Serializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DbNameList {
     private final List<String> databases;
+    private final Serializer<String> serializer = JSONSerializer.getInstance();
+
     private boolean dirty;
 
     public DbNameList() {
@@ -18,9 +21,13 @@ public class DbNameList {
         this.setDirty(true);
     }
 
-    public void removeDatabase(String name) {
-        this.getDatabases().remove(name);
-        this.setDirty(true);
+    public boolean removeDatabase(String name) {
+        if (this.getDatabases().remove(name)){
+            this.setDirty(true);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getDatabase(String name) {
@@ -61,10 +68,14 @@ public class DbNameList {
     }
 
     public String toJSONObject() {
-        return JSONSerializer.serializeDBList(this);
+        return this.getSerializer().serializeDBList(this);
     }
 
     public int length() {
         return this.getDatabases().size();
+    }
+
+    private Serializer<String> getSerializer() {
+        return this.serializer;
     }
 }

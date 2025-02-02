@@ -2,12 +2,30 @@ package fr.tanchou.structure.utils;
 
 import java.io.*;
 
-public class LocalStorageManager implements IStorageManager {
+public class LocalStorageManager implements StorageManager {
     private final String ERR_MSG = "LocalStorageManager, An error occurred while : ";
-    private String basePath = "src/main/resources/";
+    private String basePath = "TanchouDB/";
     private String extension = ".json";
 
-    public LocalStorageManager() {
+    private static LocalStorageManager instance;
+
+    public static LocalStorageManager getInstance() {
+        if (instance == null) {
+            instance = new LocalStorageManager();
+        }
+        return instance;
+    }
+
+    private LocalStorageManager() {
+        // If the directory does not exist, create it
+        File directory = new File(getBasePath());
+        if (!directory.exists()) {
+            if (directory.mkdir()) {
+                System.out.println("Directory created: " + getBasePath());
+            } else {
+                System.err.println(ERR_MSG + "creating directory");
+            }
+        }
     }
 
     LocalStorageManager(String basePath, String extension) {

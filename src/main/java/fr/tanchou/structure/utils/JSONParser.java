@@ -4,11 +4,25 @@ import fr.tanchou.enums.PrimitiveType;
 import fr.tanchou.structure.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class JSONParser {
+public class JSONParser implements Parser<String> {
 
-    public static Database parseDatabase(String jsonString) {
+    private static JSONParser instance;
+
+    public static JSONParser getInstance() {
+        if (instance == null) {
+            instance = new JSONParser();
+        }
+        return instance;
+    }
+
+    private JSONParser() {
+    }
+
+    public Database parseDatabase(String jsonString) {
         jsonString = jsonString.trim(); // Remove leading/trailing whitespace
         if (!jsonString.startsWith("{") || !jsonString.endsWith("}")) {
             throw new IllegalArgumentException("Invalid JSON: Must start with '{' and end with '}'" + jsonString);
@@ -17,40 +31,53 @@ public class JSONParser {
         // Remove the outer braces
         jsonString = jsonString.substring(1, jsonString.length() - 1).trim();
 
-        Database database = new Database(extractValue(jsonString, "name"));
 
         // Extract the "schemas" array
         String schemasString = extractArray(jsonString, "schemas");
-        List<Schema> schemas = parseSchemas(schemasString);
-        for (Schema schema : schemas) {
-            database.addSchema(schema);
-        }
+        Map<String,Schema> schemas = parseSchemas(schemasString);
+
+        Database database = new Database(extractValue(jsonString, "name"), schemas);
 
         return database;
     }
 
-    private static List<Schema> parseSchemas(String schemasString) {
-        List<Schema> schemas = new ArrayList<>();
+    private Map<String,Schema> parseSchemas(String schemasString) {
+        Map<String,Schema> schemas = new HashMap<>(3);
         String[] schemaTokens = splitJsonArray(schemasString);
 
         for (String schemaToken : schemaTokens) {
             String schemaName = extractValue(schemaToken, "name");
-            Schema schema = new Schema(schemaName);
 
             // Extract the "tables" array
             String tablesString = extractArray(schemaToken, "tables");
             List<Table> tables = parseTables(tablesString);
-            for (Table table : tables) {
-                schema.addTable(table);
-            }
 
-            schemas.add(schema);
+            switch (schemaName) {
+                case "user":
+                    Schema userSchema = new UserSchema();
+                    schemas.put("user", userSchema);
+                    for (Table table : tables) {
+                        userSchema.addTable(table);
+                    }
+                    break;
+
+                case "constraint":
+                    Schema constraintSchema = new ConstraintSchema();
+                    schemas.put("constraint", constraintSchema);
+                    for (Table table : tables) {
+                        constraintSchema.addTable(table);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid schema name: " + schemaName);
+            }
         }
 
         return schemas;
     }
 
-    private static List<Table> parseTables(String tablesString) {
+    private List<Table> parseTables(String tablesString) {
         List<Table> tables = new ArrayList<>();
         String[] tableTokens = splitJsonArray(tablesString);
 
@@ -71,7 +98,7 @@ public class JSONParser {
         return tables;
     }
 
-    private static List<Column> parseColumns(String columnsString) {
+    private List<Column> parseColumns(String columnsString) {
         List<Column> columns = new ArrayList<>();
         String[] columnTokens = splitJsonArray(columnsString);
 
@@ -81,15 +108,19 @@ public class JSONParser {
             boolean primaryKey = Boolean.parseBoolean(extractValue(columnToken, "primaryKey"));
             boolean foreignKey = Boolean.parseBoolean(extractValue(columnToken, "foreignKey"));
             boolean nullable = Boolean.parseBoolean(extractValue(columnToken, "nullable"));
+            boolean unique = Boolean.parseBoolean(extractValue(columnToken, "unique"));
+            boolean autoIncrement = Boolean.parseBoolean(extractValue(columnToken, "autoIncrement"));
+            String defaultValue = extractValue(columnToken, "defaultValue");
 
-            Column column = new Column(name, PrimitiveType.valueOf(type), primaryKey, foreignKey, nullable);
+            Column column = new Column(name, PrimitiveType.valueOf(type), primaryKey, foreignKey, nullable, unique, autoIncrement, defaultValue);
+            column.setDirty(false);
             columns.add(column);
         }
 
         return columns;
     }
 
-    private static String extractValue(String json, String key) {
+    private String extractValue(String json, String key) {
         String keyWithQuotes = "\"" + key + "\":";
         int keyIndex = json.indexOf(keyWithQuotes);
         if (keyIndex == -1) {
@@ -101,7 +132,7 @@ public class JSONParser {
         return json.substring(valueStart, valueEnd);
     }
 
-    private static String extractArray(String json, String key) {
+    private String extractArray(String json, String key) {
         String keyWithQuotes = "\"" + key + "\":";
         int keyIndex = json.indexOf(keyWithQuotes);
         if (keyIndex == -1) {
@@ -113,7 +144,7 @@ public class JSONParser {
         return json.substring(arrayStart + 1, arrayEnd).trim();
     }
 
-    private static String[] splitJsonArray(String jsonArray) {
+    private String[] splitJsonArray(String jsonArray) {
         List<String> tokens = new ArrayList<>();
         int depth = 0;
         int start = 0;
@@ -135,7 +166,7 @@ public class JSONParser {
         return tokens.toArray(new String[0]);
     }
 
-    private static int findMatchingBracket(String json, int start) {
+    private int findMatchingBracket(String json, int start) {
         int depth = 1;
         for (int i = start + 1; i < json.length(); i++) {
             char c = json.charAt(i);
@@ -146,8 +177,7 @@ public class JSONParser {
         throw new IllegalArgumentException("Unmatched brackets in JSON: " + json);
     }
 
-
-    public static DbNameList parseDBList(String jsonString) {
+    public DbNameList parseDBList(String jsonString) {
 
         if (jsonString == null || jsonString.isEmpty()) {
             return new DbNameList();

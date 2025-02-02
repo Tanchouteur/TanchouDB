@@ -1,26 +1,25 @@
 package fr.tanchou.tester;
 
+import fr.tanchou.structure.Database;
+import fr.tanchou.structure.Table;
 import fr.tanchou.structure.utils.DbManager;
+import fr.tanchou.structure.utils.IDbManager;
 
 public class Main {
     public static void main(String[] args) {
 
-        DbManager dbManager = new DbManager();
+        IDbManager dbManager = new DbManager();
 
         dbManager.listDatabases();
 
-        /*Database db = new Database("db1");
-        Schema schema = new Schema("schema1");
-        Table table = new Table("table1");
-        table.addColumn(new Column("col1", PrimitiveType.INTEGER, true, false, false));
-        table.addColumn(new Column("col2", PrimitiveType.VARCHAR, false, false, true));
-        schema.addTable(table);
-        db.addSchema(schema);
+        dbManager.createDatabase("testDB");
 
-        //dbManager.addDatabase(db);*/
+        Database db = dbManager.getDatabasesMap().get("testDB");
+        //db.addTable(new Table("testTable"));
 
-        System.out.println(dbManager.getDatabase("db1").toJSONObject());
 
-        dbManager.commit();
+        System.out.println(db);
+
+        //dbManager.commit();
     }
 }

@@ -2,8 +2,20 @@ package fr.tanchou.structure.utils;
 
 import fr.tanchou.structure.*;
 
-public class JSONSerializer {
-    public static String serializeDatabase(Database db) {
+public class JSONSerializer implements Serializer<String> {
+    private static JSONSerializer instance;
+
+    public static JSONSerializer getInstance() {
+        if (instance == null) {
+            instance = new JSONSerializer();
+        }
+        return instance;
+    }
+
+    private JSONSerializer() {
+    }
+
+    public String serializeDatabase(Database db) {
         if (db == null) throw new IllegalArgumentException("Database cannot be null");
 
         StringBuilder json = new StringBuilder();
@@ -11,8 +23,7 @@ public class JSONSerializer {
         json.append("\"name\": \"").append(db.getName()).append("\",\n");
         json.append("\"schemas\": [\n");
 
-        for (int i = 0; i < db.getSchemas().size(); i++) {
-            Schema schema = db.getSchemas().get(i);
+        for (Schema schema : db.getSchemas().values()) {
             json.append("  { \"name\": \"").append(schema.getName()).append("\",\n");
             json.append("    \"tables\": [\n");
 
@@ -27,7 +38,10 @@ public class JSONSerializer {
                     json.append("\"type\": \"").append(col.getType()).append("\", ");
                     json.append("\"primaryKey\": \"").append(col.isPrimaryKey()).append("\", ");
                     json.append("\"foreignKey\": \"").append(col.isForeignKey()).append("\", ");
-                    json.append("\"nullable\": \"").append(col.isNullable()).append("\" }");
+                    json.append("\"nullable\": \"").append(col.isNullable()).append("\", ");
+                    json.append("\"unique\": \"").append(col.isUnique()).append("\", ");
+                    json.append("\"autoIncrement\": \"").append(col.isAutoIncrement()).append("\", ");
+                    json.append("\"defaultValue\": \"").append(col.getDefaultValue()).append("\" }");
 
                     if (k < table.getColumns().size() - 1) json.append(",");
                     json.append("\n");
@@ -43,7 +57,7 @@ public class JSONSerializer {
             json.append("    ]\n");
             json.append("  }");
 
-            if (i < db.getSchemas().size() - 1) json.append(",");
+            if (!schema.getName().equals("constraint")) json.append(",");
             json.append("\n");
         }
 
@@ -51,7 +65,7 @@ public class JSONSerializer {
         return json.toString();
     }
 
-    public static String serializeDBList(DbNameList dbNameList) {
+    public String serializeDBList(DbNameList dbNameList) {
         if (dbNameList == null) throw new IllegalArgumentException("DbNameList cannot be null");
 
         StringBuilder json = new StringBuilder();

@@ -5,20 +5,20 @@ import java.util.*;
 public class Table {
     private final String name;
     private final List<Column> columns;
-    private final List<Constraint> constraints;
+    private final List<Key> index;
 
     public Table(String name) {
         this.name = name;
         this.columns = new ArrayList<>();
-        this.constraints = new ArrayList<>();
+        this.index = new ArrayList<>();
     }
 
     public void addColumn(Column column) {
         this.getColumns().add(column);
     }
 
-    public void addConstraint(Constraint constraint) {
-        this.getConstraints().add(constraint);
+    public void addKey(Key index) {
+        this.getIndex().add(index);
     }
 
     public String getName() {
@@ -29,8 +29,8 @@ public class Table {
         return columns;
     }
 
-    public List<Constraint> getConstraints() {
-        return constraints;
+    public List<Key> getIndex() {
+        return index;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class Table {
             }
         }
 
-        if (!this.getConstraints().isEmpty()) {
+        if (!this.getIndex().isEmpty()) {
             sb.append("\nConstraint : \n");
 
-            for (int i = 0; i < this.getConstraints().size(); i++) {
-                sb.append(this.getConstraints().get(i));
-                if (i < this.getConstraints().size() - 1) {
+            for (int i = 0; i < this.getIndex().size(); i++) {
+                sb.append(this.getIndex().get(i));
+                if (i < this.getIndex().size() - 1) {
                     sb.append(", \n");
                 }
             }

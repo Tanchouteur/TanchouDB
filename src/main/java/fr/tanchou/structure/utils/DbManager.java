@@ -1,19 +1,19 @@
 package fr.tanchou.structure.utils;
 
-import fr.tanchou.structure.DbNameList;
-import fr.tanchou.structure.Database;
+import fr.tanchou.structure.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DbManager {
+public class DbManager implements IDbManager {
 
     private DbNameList dbNameList;
     private final Map<String,Database> databaseMap;
-    private final IStorageManager storageManager;
+    private final StorageManager storageManager;
+    private final Parser<String> parser = JSONParser.getInstance();
 
     public DbManager() {
-        this.storageManager = new LocalStorageManager();
+        this.storageManager = LocalStorageManager.getInstance();
         this.setDbNameList(this.loadDBList());
 
         this.databaseMap = new HashMap<>(this.getDbNameList().length()+5);
@@ -22,15 +22,28 @@ public class DbManager {
 
     private void loadDatabases() {
         for (String dbName : this.getDbNameList().getDatabases()) {
-            this.getDatabasesMap().put(dbName, JSONParser.parseDatabase(this.getStorageManager().readFromFile(dbName)));
+            this.getDatabasesMap().put(dbName, this.getParser().parseDatabase(this.getStorageManager().readFromFile(dbName)));
         }
     }
 
     private DbNameList loadDBList() {
-        return JSONParser.parseDBList(this.getStorageManager().readFromFile("dbNameList"));
+        return this.getParser().parseDBList(this.getStorageManager().readFromFile("dbNameList"));
     }
 
-    public void addDatabase(Database db) throws IllegalArgumentException {
+    public void createDatabase(String dbName) throws IllegalArgumentException {
+        Schema userSchema = new UserSchema();
+        Schema constraintSchema = new ConstraintSchema();
+
+        Map<String, Schema> schemas = new HashMap<>(3);
+        schemas.put("user", userSchema);
+        schemas.put("constraint", constraintSchema);
+
+        Database db = new Database(dbName, schemas);
+
+        this.addDatabase(db);
+    }
+
+    private void addDatabase(Database db) throws IllegalArgumentException {
         if (this.getDatabasesMap().containsKey(db.getName())) {
             throw new IllegalArgumentException("Database already exists");
         }
@@ -38,8 +51,10 @@ public class DbManager {
         this.getDatabasesMap().put(db.getName(), db);
     }
 
-    public void removeDatabase(String name) {
-        this.getDbNameList().removeDatabase(name);
+    public void removeDatabase(String name) throws IllegalArgumentException {
+        if (!this.getDbNameList().removeDatabase(name)){
+            throw new IllegalArgumentException("Database does not exist");
+        }
         this.getDatabasesMap().remove(name);
     }
 
@@ -70,11 +85,15 @@ public class DbManager {
         }
     }
 
-    public Database getDatabase(String db1) {
-        return this.getDatabasesMap().get(db1);
+    public Database getDatabase(String dbName) {
+        return this.getDatabasesMap().get(dbName);
     }
 
-    private IStorageManager getStorageManager() {
+    private StorageManager getStorageManager() {
         return this.storageManager;
+    }
+
+    private Parser<String> getParser() {
+        return this.parser;
     }
 }

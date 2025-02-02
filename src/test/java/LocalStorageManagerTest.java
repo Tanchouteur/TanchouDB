@@ -1,4 +1,4 @@
-import fr.tanchou.structure.utils.IStorageManager;
+import fr.tanchou.structure.utils.StorageManager;
 import fr.tanchou.structure.utils.LocalStorageManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -23,7 +23,7 @@ public class LocalStorageManagerTest {
         // Test content to write and read
         String content = "Hello, this is a test content!";
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Write content to the file
         storageManager.writeToFile(filename, content);
@@ -41,7 +41,7 @@ public class LocalStorageManagerTest {
         File file = tempDir.resolve("emptyFile.txt").toFile();
         String filename = file.getAbsolutePath();
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Test empty content
         String content = "";
@@ -61,7 +61,7 @@ public class LocalStorageManagerTest {
         // Non-existent file path
         String filename = tempDir.resolve("nonExistentFile.txt").toAbsolutePath().toString();
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Attempt to read from the non-existent file
         String readContent = storageManager.readFromFile(filename);
@@ -75,7 +75,7 @@ public class LocalStorageManagerTest {
         // Invalid file path (directory instead of file)
         String invalidPath = tempDir.toAbsolutePath().toString();
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Attempt to write to the invalid path
         storageManager.writeToFile(invalidPath, "Test content");
@@ -87,7 +87,7 @@ public class LocalStorageManagerTest {
         File file = tempDir.resolve("emptyFile.txt").toFile();
         String filename = file.getAbsolutePath();
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Read content from the empty file
         String readContent = storageManager.readFromFile(filename);
@@ -105,7 +105,7 @@ public class LocalStorageManagerTest {
         // Test content with multiple lines
         String content = "Line 1\nLine 2\nLine 3";
 
-        IStorageManager storageManager = new LocalStorageManager();
+        StorageManager storageManager = LocalStorageManager.getInstance();
 
         // Write content to the file
         storageManager.writeToFile(filename, content);
