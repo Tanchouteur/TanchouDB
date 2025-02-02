@@ -12,7 +12,16 @@ public class DbManager implements IDbManager {
 
     private final BufferStructure bufferStructure;
 
-    public DbManager() {
+    private static IDbManager instance;
+
+    public static IDbManager getInstance() {
+        if (instance == null) {
+            return new DbManager();
+        }
+        return instance;
+    }
+
+    private DbManager() {
         this.bufferStructure = FullBufferStructure.getInstance();
     }
 

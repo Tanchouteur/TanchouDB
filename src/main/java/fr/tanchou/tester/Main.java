@@ -1,6 +1,7 @@
 package fr.tanchou.tester;
 
 import fr.tanchou.dataInstance.FullBufferData;
+import fr.tanchou.language.TransactionManager;
 import fr.tanchou.structure.*;
 import fr.tanchou.structure.utils.DbManager;
 import fr.tanchou.structure.utils.IDbManager;
@@ -8,7 +9,7 @@ import fr.tanchou.structure.utils.IDbManager;
 public class Main {
     public static void main(String[] args) {
 
-        IDbManager dbManager = new DbManager();
+        TransactionManager transactionManager = new TransactionManager();
 
         dbManager.listDatabases();
 

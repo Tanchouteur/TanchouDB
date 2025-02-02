@@ -9,8 +9,9 @@ public class IncrementClassic implements Increment {
     }
 
     @Override
-    public void increment() {
+    public int increment() {
         increment++;
+        return increment;
     }
 
     @Override
