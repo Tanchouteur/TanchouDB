@@ -23,12 +23,12 @@ public class JSONSerializer implements Serializer<String> {
         json.append("\"name\": \"").append(db.getName()).append("\",\n");
         json.append("\"schemas\": [\n");
 
-        for (Schema schema : db.getSchemas().values()) {
-            json.append("  { \"name\": \"").append(schema.getName()).append("\",\n");
+        for (ASchema ASchema : db.getSchemas().values()) {
+            json.append("  { \"name\": \"").append(ASchema.getName()).append("\",\n");
             json.append("    \"tables\": [\n");
 
-            for (int j = 0; j < schema.getTables().size(); j++) {
-                Table table = schema.getTables().get(j);
+            for (int j = 0; j < ASchema.getTables().size(); j++) {
+                Table table = ASchema.getTables().get(j);
                 json.append("      { \"name\": \"").append(table.getName()).append("\",\n");
                 json.append("        \"columns\": [\n");
 
@@ -50,14 +50,14 @@ public class JSONSerializer implements Serializer<String> {
                 json.append("        ]\n");
                 json.append("      }");
 
-                if (j < schema.getTables().size() - 1) json.append(",");
+                if (j < ASchema.getTables().size() - 1) json.append(",");
                 json.append("\n");
             }
 
             json.append("    ]\n");
             json.append("  }");
 
-            if (!schema.getName().equals("constraint")) json.append(",");
+            if (!ASchema.getName().equals("constraint")) json.append(",");
             json.append("\n");
         }
 

@@ -1,8 +1,8 @@
 package fr.tanchou.structure.utils;
 
+import fr.tanchou.structure.Schema;
 import fr.tanchou.enums.PrimitiveType;
 import fr.tanchou.structure.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,15 +34,13 @@ public class JSONParser implements Parser<String> {
 
         // Extract the "schemas" array
         String schemasString = extractArray(jsonString, "schemas");
-        Map<String,Schema> schemas = parseSchemas(schemasString);
+        Map<String, ASchema> schemas = parseSchemas(schemasString);
 
-        Database database = new Database(extractValue(jsonString, "name"), schemas);
-
-        return database;
+        return new Database(extractValue(jsonString, "name"), schemas);
     }
 
-    private Map<String,Schema> parseSchemas(String schemasString) {
-        Map<String,Schema> schemas = new HashMap<>(3);
+    private Map<String, ASchema> parseSchemas(String schemasString) {
+        Map<String, ASchema> schemas = new HashMap<>(3);
         String[] schemaTokens = splitJsonArray(schemasString);
 
         for (String schemaToken : schemaTokens) {
@@ -52,26 +50,14 @@ public class JSONParser implements Parser<String> {
             String tablesString = extractArray(schemaToken, "tables");
             List<Table> tables = parseTables(tablesString);
 
-            switch (schemaName) {
-                case "user":
-                    Schema userSchema = new UserSchema();
-                    schemas.put("user", userSchema);
-                    for (Table table : tables) {
-                        userSchema.addTable(table);
-                    }
-                    break;
+            ASchema schema = new Schema(schemaName);
 
-                case "constraint":
-                    Schema constraintSchema = new ConstraintSchema();
-                    schemas.put("constraint", constraintSchema);
-                    for (Table table : tables) {
-                        constraintSchema.addTable(table);
-                    }
-                    break;
-
-                default:
-                    throw new IllegalArgumentException("Invalid schema name: " + schemaName);
+            for (Table table : tables) {
+                schema.addTable(table);
             }
+
+            schemas.put(schemaName, schema);
+
         }
 
         return schemas;

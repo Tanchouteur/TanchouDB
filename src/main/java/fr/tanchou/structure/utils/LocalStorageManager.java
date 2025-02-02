@@ -38,6 +38,7 @@ public class LocalStorageManager implements StorageManager {
         this.setExtension(extension);
     }
 
+    @Override
     public void writeToFile(String filename, String content) {
         filename = getBasePath() + filename + getExtension();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
@@ -47,9 +48,23 @@ public class LocalStorageManager implements StorageManager {
         }
     }
 
+    @Override
     public String readFromFile(String filename) {
+
+        if (filename == null){
+            throw new IllegalArgumentException("filename cannot be null");
+        }else if (filename.isEmpty()){
+            throw new IllegalArgumentException("filename cannot be empty");
+        }
+
         filename = getBasePath() + filename + getExtension();
+
+        if (!new File(filename).exists()) { //if file does not exist
+            throw new IllegalArgumentException("File not found: " + filename);
+        }
+
         StringBuilder content = new StringBuilder();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -59,6 +74,15 @@ public class LocalStorageManager implements StorageManager {
             System.err.println(ERR_MSG + "reading from file: " + e.getMessage());
         }
         return content.toString();
+    }
+
+    @Override
+    public void deleteFile(String name) {
+        name = getBasePath() + name + getExtension();
+        File file = new File(name);
+        if (!file.delete()) {
+            System.err.println(ERR_MSG + "deleting file");
+        }
     }
 
     private void setBasePath(String basePath) {

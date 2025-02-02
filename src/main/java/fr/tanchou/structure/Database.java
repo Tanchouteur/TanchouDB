@@ -7,11 +7,20 @@ import java.util.*;
 
 public class Database {
     private final String name;
-    private final Map<String, Schema> Schemas;
+    private final Map<String, ASchema> Schemas;
 
     private final Serializer<String> serializer = JSONSerializer.getInstance();
 
-    public Database(String name, Map<String, Schema> schemas) {
+    public Database(String name, Map<String, ASchema> schemas) {
+
+        if (schemas.size() < 3){
+            throw new IllegalArgumentException("Database must have at least 3 schemas");
+        }else if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Database name cannot be null or empty");
+        }else if (name.equals("TanchouDBUser") || name.equals("TanchouDBConstraint")){
+            throw new IllegalArgumentException("Database name cannot be TanchouDBUser or TanchouDBConstraint");
+        }
+
         this.name = name;
         this.Schemas = schemas;
     }
@@ -20,11 +29,11 @@ public class Database {
         this.getUserSchema().addTable(table);
     }
 
-    public Schema getUserSchema() {
+    public ASchema getUserSchema() {
         return getSchemas().get("user");
     }
 
-    private Schema getConstraintSchema() {
+    private ASchema getConstraintSchema() {
         return getSchemas().get("constraint");
     }
 
@@ -32,7 +41,7 @@ public class Database {
         return name;
     }
 
-    public Map<String, Schema> getSchemas() {
+    public Map<String, ASchema> getSchemas() {
         return Schemas;
     }
 

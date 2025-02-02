@@ -10,7 +10,7 @@ public class Column {
     private final boolean isForeignKey;
     private final boolean isUnique;
     private final boolean autoIncrement;
-    private String defaultValue;
+    private final String defaultValue;
 
     private boolean dirty;
 

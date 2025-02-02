@@ -6,4 +6,5 @@ public interface StorageManager {
 
     String readFromFile(String filename);
 
+    void deleteFile(String name);
 }
