@@ -2,13 +2,15 @@ package fr.tanchou.tester;
 
 import fr.tanchou.enums.ConstraintType;
 import fr.tanchou.enums.PrimitiveType;
+import fr.tanchou.structure.utils.IStorageManager;
 import fr.tanchou.structure.utils.JSONParser;
-import fr.tanchou.structure.utils.StorageManager;
+import fr.tanchou.structure.utils.LocalStorageManager;
 import fr.tanchou.structure.*;
 
 public class ReadDBMain {
     public static void main(String[] args) {
-        Database db = JSONParser.parseDatabase(StorageManager.readFromFile("MyDB"));
+        IStorageManager storageManager = new LocalStorageManager();
+        Database db = JSONParser.parseDatabase(storageManager.readFromFile("MyDB"));
 
         Schema schema = new Schema("Public");
         db.addSchema(schema);
@@ -19,8 +21,7 @@ public class ReadDBMain {
         users.addConstraint(new Constraint(ConstraintType.PRIMARY_KEY, "id"));
 
         schema.addTable(users);
-
-        StorageManager.writeToFile(db.getName(), db.toJSONObject());
+        storageManager.writeToFile(db.getName(), db.toJSONObject());
 
     }
 }

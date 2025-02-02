@@ -150,7 +150,7 @@ public class JSONParser {
     public static DbNameList parseDBList(String jsonString) {
 
         if (jsonString == null || jsonString.isEmpty()) {
-            initDBList();
+            return new DbNameList();
         }else {
 
             jsonString = jsonString.trim(); // Remove leading/trailing whitespace
@@ -175,12 +175,5 @@ public class JSONParser {
 
             return dbNameList;
         }
-
-        return new DbNameList();
-    }
-
-    private static void initDBList() {
-        DbNameList dbNameList = new DbNameList();
-        StorageManager.writeToFile("dbNameList", dbNameList.toJSONObject());
     }
 }

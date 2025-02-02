@@ -10,8 +10,10 @@ public class DbManager {
 
     private DbNameList dbNameList;
     private final Map<String,Database> databaseMap;
+    private final IStorageManager storageManager;
 
     public DbManager() {
+        this.storageManager = new LocalStorageManager();
         this.setDbNameList(this.loadDBList());
 
         this.databaseMap = new HashMap<>(this.getDbNameList().length()+5);
@@ -20,12 +22,12 @@ public class DbManager {
 
     private void loadDatabases() {
         for (String dbName : this.getDbNameList().getDatabases()) {
-            this.getDatabasesMap().put(dbName, JSONParser.parseDatabase(StorageManager.readFromFile(dbName)));
+            this.getDatabasesMap().put(dbName, JSONParser.parseDatabase(this.getStorageManager().readFromFile(dbName)));
         }
     }
 
     private DbNameList loadDBList() {
-        return JSONParser.parseDBList(StorageManager.readFromFile("dbNameList"));
+        return JSONParser.parseDBList(this.getStorageManager().readFromFile("dbNameList"));
     }
 
     public void addDatabase(Database db) throws IllegalArgumentException {
@@ -60,15 +62,19 @@ public class DbManager {
     public void commit() {
         for (Database db : this.getDatabasesMap().values()) {
             if (db.isDirty()) {
-                StorageManager.writeToFile(db.getName(), db.toJSONObject());
+                this.getStorageManager().writeToFile(db.getName(), db.toJSONObject());
             }
         }
         if (this.getDbNameList().isDirty()) {
-            StorageManager.writeToFile("dbNameList", this.getDbNameList().toJSONObject());
+            this.getStorageManager().writeToFile("dbNameList", this.getDbNameList().toJSONObject());
         }
     }
 
     public Database getDatabase(String db1) {
         return this.getDatabasesMap().get(db1);
+    }
+
+    private IStorageManager getStorageManager() {
+        return this.storageManager;
     }
 }

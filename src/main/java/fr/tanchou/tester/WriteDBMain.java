@@ -2,13 +2,15 @@ package fr.tanchou.tester;
 
 import fr.tanchou.enums.ConstraintType;
 import fr.tanchou.enums.PrimitiveType;
+import fr.tanchou.structure.utils.IStorageManager;
 import fr.tanchou.structure.utils.JSONParser;
-import fr.tanchou.structure.utils.StorageManager;
+import fr.tanchou.structure.utils.LocalStorageManager;
 import fr.tanchou.structure.*;
 
 public class WriteDBMain {
     public static void main(String[] args) {
-        DbNameList dbNameList = JSONParser.parseDBList(StorageManager.readFromFile("dbNameList"));
+        IStorageManager storageManager = new LocalStorageManager();
+        DbNameList dbNameList = JSONParser.parseDBList(storageManager.readFromFile("dbNameList"));
 
         Database db = new Database("MyDB");
 
@@ -24,8 +26,8 @@ public class WriteDBMain {
 
         dbNameList.addDatabase(db.getName());
 
-        StorageManager.writeToFile("dbNameList", dbNameList.toJSONObject());
-        StorageManager.writeToFile(db.getName(), db.toJSONObject());
+        storageManager.writeToFile("dbNameList", dbNameList.toJSONObject());
+        storageManager.writeToFile(db.getName(), db.toJSONObject());
 
         System.out.println("DbNameList: " + dbNameList);
 
