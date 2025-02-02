@@ -1,6 +1,11 @@
-package fr.tanchou.structure.utils;
+package fr.tanchou.utils;
 
 import fr.tanchou.structure.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class JSONSerializer implements Serializer<String> {
     private static JSONSerializer instance;
@@ -78,6 +83,21 @@ public class JSONSerializer implements Serializer<String> {
         }
 
         json.append("]\n}");
+        return json.toString();
+    }
+
+    @Override
+    public String serializeData(Map<String, Object> datas) {
+
+        if (datas == null) throw new IllegalArgumentException("Data cannot be null");
+
+        StringBuilder json = new StringBuilder();
+        json.append("[");
+
+        for (Object data : datas.values()) {
+            json.append(data.toString()).append(",");
+        }
+        json.append("]");
         return json.toString();
     }
 }

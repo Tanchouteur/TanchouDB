@@ -868,7 +868,7 @@
 											"top": 775,
 											"width": 106.16162109375,
 											"height": 13,
-											"text": "+load(): data",
+											"text": "+load(): dataJson",
 											"horizontalAlignment": 0
 										},
 										{
@@ -15111,7 +15111,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGUmfHCO5fDknQ="
 							},
-							"name": "data",
+							"name": "dataJson",
 							"type": "Map<Column Object>"
 						}
 					]
@@ -15449,7 +15449,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGUmgalwuOAHNU="
 									},
-									"type": "data",
+									"type": "dataJson",
 									"direction": "return"
 								}
 							]

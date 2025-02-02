@@ -1,13 +1,15 @@
 package fr.tanchou.structure;
 
-import fr.tanchou.structure.utils.JSONSerializer;
-import fr.tanchou.structure.utils.Serializer;
+import fr.tanchou.utils.JSONSerializer;
+import fr.tanchou.utils.Serializer;
 
 import java.util.*;
 
 public class Database {
     private final String name;
     private final Map<String, ASchema> Schemas;
+
+    private boolean dirty = false;
 
     private final Serializer<String> serializer = JSONSerializer.getInstance();
 
@@ -27,14 +29,19 @@ public class Database {
 
     public void addTable(Table table) {
         this.getUserSchema().addTable(table);
+        this.dirty = true;
     }
 
     public ASchema getUserSchema() {
-        return getSchemas().get("user");
+        return getSchemas().get("userSchema");
     }
 
     private ASchema getConstraintSchema() {
-        return getSchemas().get("constraint");
+        return getSchemas().get("constraintSchema");
+    }
+
+    private ASchema getKeySchema() {
+        return getSchemas().get("keySchema");
     }
 
     public String getName() {
@@ -45,20 +52,20 @@ public class Database {
         return Schemas;
     }
 
-    @Override
-    public String toString() {
-        return this.toJSONObject();
+    public boolean isDirty() {
+        return getUserSchema().isDirty() || getConstraintSchema().isDirty() || getKeySchema().isDirty() || dirty;
+    }
+
+    private Serializer<String> getSerializer() {
+        return serializer;
     }
 
     public String toJSONObject() {
         return this.getSerializer().serializeDatabase(this);
     }
 
-    public boolean isDirty() {
-        return getUserSchema().isDirty() || getConstraintSchema().isDirty();
-    }
-
-    private Serializer<String> getSerializer() {
-        return serializer;
+    @Override
+    public String toString() {
+        return this.toJSONObject();
     }
 }

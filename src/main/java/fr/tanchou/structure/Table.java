@@ -66,4 +66,13 @@ public class Table {
         }
         return false;
     }
+
+    public String getColumnNamePk() {
+        for (Key key : this.getIndex()) {
+            if (key instanceof PrimaryKey) {
+                return key.getColumnName();
+            }
+        }
+        return null;
+    }
 }

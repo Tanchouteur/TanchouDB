@@ -1,6 +1,12 @@
-package fr.tanchou.structure.utils;
+package fr.tanchou.utils;
+
+import fr.tanchou.dataInstance.Tuple;
+import fr.tanchou.structure.DataJson;
+import fr.tanchou.structure.Table;
 
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LocalStorageManager implements StorageManager {
     private final String ERR_MSG = "LocalStorageManager, An error occurred while : ";
@@ -40,6 +46,7 @@ public class LocalStorageManager implements StorageManager {
 
     @Override
     public void writeToFile(String filename, String content) {
+
         filename = getBasePath() + filename + getExtension();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write(content);
@@ -60,7 +67,28 @@ public class LocalStorageManager implements StorageManager {
         filename = getBasePath() + filename + getExtension();
 
         if (!new File(filename).exists()) { //if file does not exist
-            throw new IllegalArgumentException("File not found: " + filename);
+
+            String location = "";
+
+            for (String part : filename.split("/")) {
+                location += part + "/";
+                if (part.contains(".")) {//if part contains extension create file on disk
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+                        writer.write("");
+                    } catch (IOException e) {
+                        System.err.println(ERR_MSG + "writing to file: " + e.getMessage());
+                    }
+                } else {
+                    File directory = new File(location);
+                    if (!directory.exists()) {
+                        if (directory.mkdir()) {
+                            System.out.println("Directory created: " + location);
+                        } else {
+                            System.err.println(ERR_MSG + "creating directory");
+                        }
+                    }
+                }
+            }
         }
 
         StringBuilder content = new StringBuilder();
@@ -71,7 +99,19 @@ public class LocalStorageManager implements StorageManager {
                 content.append(line).append("\n");
             }
         } catch (IOException e) {
-            System.err.println(ERR_MSG + "reading from file: " + e.getMessage());
+            if (e instanceof FileNotFoundException) {
+                //create Directory
+                File directory = new File(getBasePath());
+                if (!directory.exists()) {
+                    if (directory.mkdir()) {
+                        System.out.println("Directory created: " + getBasePath());
+                    } else {
+                        System.err.println(ERR_MSG + "creating directory");
+                    }
+                }
+            }else {
+                System.err.println(ERR_MSG + "reading from file: " + e.getMessage());
+            }
         }
         return content.toString();
     }
@@ -83,6 +123,24 @@ public class LocalStorageManager implements StorageManager {
         if (!file.delete()) {
             System.err.println(ERR_MSG + "deleting file");
         }
+    }
+
+    @Override
+    public Set<Tuple> loadTableData(String dbName, String schemaName, Table table) {
+        String filename = "data/" + dbName + "/" + schemaName + "/" + table.getName();
+        String content = readFromFile(filename);
+
+        Set<Tuple> data = new HashSet<>();
+
+        while (content.contains("[")) {
+            int start = content.indexOf("[");
+            int end = content.indexOf("]");
+            DataJson dataJson = JSONParser.getInstance().parseData(content.substring(start, end + 1), table);
+            data.add(new Tuple((String) dataJson.getData().get(table.getColumnNamePk()),dataJson));
+            content = content.substring(end + 1);
+        }
+
+        return data;
     }
 
     private void setBasePath(String basePath) {

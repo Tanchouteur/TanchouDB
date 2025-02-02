@@ -1,4 +1,8 @@
-package fr.tanchou.structure;
+package fr.tanchou.structure.utils;
+
+import fr.tanchou.dataInstance.Tuple;
+import fr.tanchou.enums.KeyType;
+import fr.tanchou.structure.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,5 +19,11 @@ public class DDLCall {
         schemas.put("key", new KeySchema());
 
         return new Database(dbName, schemas);
+    }
+
+    public static Tuple createIndex(String dbName, String name, String name1, KeyType keyType) {
+        FullBufferStructure bufferStructure = FullBufferStructure.getInstance();
+
+        return null;
     }
 }

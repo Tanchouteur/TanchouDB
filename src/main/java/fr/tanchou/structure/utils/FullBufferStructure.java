@@ -2,11 +2,15 @@ package fr.tanchou.structure.utils;
 
 import fr.tanchou.structure.Database;
 import fr.tanchou.structure.DbNameList;
+import fr.tanchou.utils.JSONParser;
+import fr.tanchou.utils.LocalStorageManager;
+import fr.tanchou.utils.Parser;
+import fr.tanchou.utils.StorageManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class FullBufferStructure implements BufferStructure{
+public class FullBufferStructure implements BufferStructure {
 
     private final DbNameList dbNameList;
     private final Map<String, Database> databaseMap;
@@ -15,11 +19,21 @@ public class FullBufferStructure implements BufferStructure{
 
     private boolean isDirty = false;
 
-    public FullBufferStructure() {
+    private static FullBufferStructure instance;
+
+    private FullBufferStructure() {
         this.storageManager = LocalStorageManager.getInstance();
         this.dbNameList = loadDBList();
         this.databaseMap = loadDatabases();
 
+    }
+
+    public static FullBufferStructure getInstance() {
+        if (instance == null) {
+            instance = new FullBufferStructure();
+        }
+
+        return instance;
     }
 
     @Override
@@ -32,6 +46,7 @@ public class FullBufferStructure implements BufferStructure{
         this.getDatabasesMap().put(db.getName(), db);
 
         this.setDirty(true);
+        commit();
     }
 
     @Override

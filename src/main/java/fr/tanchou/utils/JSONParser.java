@@ -1,12 +1,10 @@
-package fr.tanchou.structure.utils;
+package fr.tanchou.utils;
 
 import fr.tanchou.structure.Schema;
 import fr.tanchou.enums.PrimitiveType;
 import fr.tanchou.structure.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class JSONParser implements Parser<String> {
 
@@ -191,5 +189,42 @@ public class JSONParser implements Parser<String> {
 
             return dbNameList;
         }
+    }
+
+    @Override
+    public DataJson parseData(String datas, Table table) {
+
+        Map<String,Object> dataArray = new HashMap<>();
+
+        if (datas == null) throw new IllegalArgumentException("Data cannot be null");
+
+        datas = datas.substring(1, datas.length() - 1); // Remove the outer braces
+
+        int i = 0;
+        for (String data : datas.split(",")) {
+
+            switch (table.getColumns().get(i).getType()){
+                case INTEGER:
+                    dataArray.put(table.getColumns().get(i).getName(), Integer.parseInt(data));
+                    break;
+                case VARCHAR:
+                    dataArray.put(table.getColumns().get(i).getName(), data);
+                    break;
+                case BOOLEAN:
+                    dataArray.put(table.getColumns().get(i).getName(), Boolean.parseBoolean(data));
+                    break;
+                case DOUBLE:
+                    dataArray.put(table.getColumns().get(i).getName(), Double.parseDouble(data));
+                    break;
+                case FLOAT:
+                    dataArray.put(table.getColumns().get(i).getName(), Float.parseFloat(data));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid type: " + table.getColumns().get(i).getType());
+            }
+            i++;
+        }
+
+        return new DataJson(dataArray);
     }
 }

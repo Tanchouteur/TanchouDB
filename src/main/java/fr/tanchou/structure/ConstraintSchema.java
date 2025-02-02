@@ -12,7 +12,6 @@ public class ConstraintSchema extends ASchema {
         Column key1RefConstraint = new Column("key1RefConstraint", PrimitiveType.KEY,false, true, false, true, false, null);
         Column key2RefConstraint = new Column("key2RefConstraint", PrimitiveType.KEY,false, true, false, true, false, null);
 
-
         referentialIntegrityTable.addColumn(idRefConstraint);
         referentialIntegrityTable.addColumn(nameRefConstraint);
         referentialIntegrityTable.addColumn(key1RefConstraint);

@@ -1,7 +1,7 @@
 package fr.tanchou.structure;
 
-import fr.tanchou.structure.utils.JSONSerializer;
-import fr.tanchou.structure.utils.Serializer;
+import fr.tanchou.utils.JSONSerializer;
+import fr.tanchou.utils.Serializer;
 
 import java.util.ArrayList;
 import java.util.List;
