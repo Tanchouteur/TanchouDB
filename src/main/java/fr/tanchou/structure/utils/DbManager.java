@@ -11,7 +11,7 @@ public class DbManager {
     private DbNameList dbNameList;
     private final Map<String,Database> databaseMap;
 
-    DbManager() {
+    public DbManager() {
         this.setDbNameList(this.loadDBList());
 
         this.databaseMap = new HashMap<>(this.getDbNameList().length()+5);
